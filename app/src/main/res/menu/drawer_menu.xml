@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_today_task"
+            android:icon="@drawable/ic_baseline_calendar_today_24"
+            android:title="Today Task"/>
+        <item android:id="@+id/nav_future_task"
+            android:icon="@drawable/ic_baseline_task_alt_24"
+            android:title="Future Task"/>
+        <item android:id="@+id/nav_archive_task"
+            android:icon="@drawable/ic_baseline_archive_24"
+            android:title="Archive Task"/>
+    </group>
+
+</menu>
