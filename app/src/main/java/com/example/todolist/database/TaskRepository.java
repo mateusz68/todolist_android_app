@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.Date;
 import java.util.List;
 
 public class TaskRepository {
@@ -36,5 +37,17 @@ public class TaskRepository {
 
     public LiveData<List<Task>> getAllTask(){
         return allTask;
+    }
+
+    public LiveData<List<Task>> getArchiveTask(){
+        return taskDao.getArchiveTasks();
+    }
+
+    public LiveData<List<Task>> getFutureTask(Date today){
+        return taskDao.getFutureTasks(today);
+    }
+
+    public LiveData<List<Task>> getTodayTask(Date today){
+        return taskDao.getTodayTasks(today);
     }
 }

@@ -49,6 +49,7 @@ public abstract class TaskDatabase extends RoomDatabase {
                 dao.deleteAll();
                 Task task = new Task("Test title", "test decription", new Date(2020,11,5));
                 Task task1 = new Task("Test second", "test second decription", new Date(2020,12,5));
+                task1.setDone(true);
                 dao.insert(task);
                 dao.insert(task1);
             });

@@ -34,22 +34,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(savedInstanceState == null)
         {
+            TaskListFragment taskListFragment = new TaskListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(TaskListFragment.ARG_PARAM1, "0");
+            taskListFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
-                    new FirstFragment()).commit();
+                    taskListFragment).commit();
             navigationView.setCheckedItem(R.id.nav_today_task);
         }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        TaskListFragment taskListFragment;
+        Bundle bundle;
         switch (item.getItemId()){
             case R.id.nav_today_task:
+                taskListFragment = new TaskListFragment();
+                bundle = new Bundle();
+                bundle.putString(TaskListFragment.ARG_PARAM1, "0");
+                taskListFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
-                        new FirstFragment()).commit();
+                        taskListFragment).commit();
+                break;
+            case R.id.nav_future_task:
+                taskListFragment = new TaskListFragment();
+                bundle = new Bundle();
+                bundle.putString(TaskListFragment.ARG_PARAM1, "1");
+                taskListFragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
+                        taskListFragment).commit();
                 break;
             case R.id.nav_archive_task:
+                taskListFragment = new TaskListFragment();
+                bundle = new Bundle();
+                bundle.putString(TaskListFragment.ARG_PARAM1, "2");
+                taskListFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
-                        new SecondFragment()).commit();
+                        taskListFragment).commit();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

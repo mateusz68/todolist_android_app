@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.todolist.HelpMethods;
+
 import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
@@ -34,4 +36,15 @@ public class TaskViewModel extends AndroidViewModel {
         return allTasks;
     }
 
+    public LiveData<List<Task>> getArchiveTasks(){
+        return repository.getArchiveTask();
+    }
+
+    public LiveData<List<Task>> getTodayTasks(){
+        return repository.getTodayTask(HelpMethods.getCurrentDate());
+    }
+
+    public LiveData<List<Task>> getFutureTasks(){
+        return repository.getFutureTask(HelpMethods.getCurrentDate());
+    }
 }
