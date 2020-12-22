@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.database.Task;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +44,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         else
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 //        holder.textViewDate.setText(currentTask.getDate().toString());
-        holder.textViewDate.setText(formatTaskDate(currentTask));
+//        holder.textViewDate.setText(formatTaskDate(currentTask));
+        PrettyTime prettyTime = new PrettyTime();
+        holder.textViewDate.setText(prettyTime.format(currentTask.getDate()));
     }
 
     @Override

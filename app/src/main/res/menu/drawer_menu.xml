@@ -13,6 +13,9 @@
         <item android:id="@+id/nav_archive_task"
             android:icon="@drawable/ic_baseline_archive_24"
             android:title="Archive Task"/>
+        <item android:id="@+id/nav_note_list"
+            android:icon="@drawable/ic_baseline_note_24"
+            android:title="Notes"/>
     </group>
 
 </menu>

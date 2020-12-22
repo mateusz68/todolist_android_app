@@ -44,8 +44,8 @@ public class TaskListFragment extends Fragment {
     private String mParam2;
 
     private TaskViewModel taskViewModel;
-    public static final int ADD_NOTE_REQUEST = 1;
-    public static final int EDIT_NOTE_REQUEST = 2;
+    public static final int ADD_TASK_REQUEST = 1;
+    public static final int EDIT_TASK_REQUEST = 2;
     public Task selectedTask;
 
     public TaskListFragment() {
@@ -90,7 +90,7 @@ public class TaskListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AddEditTaskActivity.class);
-                startActivityForResult(intent, ADD_NOTE_REQUEST);
+                startActivityForResult(intent, ADD_TASK_REQUEST);
             }
         });
 
@@ -155,7 +155,7 @@ public class TaskListFragment extends Fragment {
                 intent.putExtra(AddEditTaskActivity.EXTRA_DESCRIPTION, task.getDescription());
                 intent.putExtra(AddEditTaskActivity.EXTRA_DATE, HelpMethods.formatDate(task.getDate()));
                 selectedTask = task;
-                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+                startActivityForResult(intent, EDIT_TASK_REQUEST);
             }
         });
 
@@ -167,7 +167,7 @@ public class TaskListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
+        if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK){
             String title = data.getStringExtra(AddEditTaskActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddEditTaskActivity.EXTRA_DESCRIPTION);
             String taskDate = data.getStringExtra(AddEditTaskActivity.EXTRA_DATE);
@@ -179,7 +179,7 @@ public class TaskListFragment extends Fragment {
             Task task = new Task(title, description, taskD);
             taskViewModel.insert(task);
             Toast.makeText(getContext(),"Note saved", Toast.LENGTH_SHORT).show();
-        }else if(requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK){
+        }else if(requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK){
             int id = data.getIntExtra(AddEditTaskActivity.EXTRA_ID, -1);
             if(id == -1){
                 Toast.makeText(getContext(), "Note can't be update", Toast.LENGTH_SHORT).show();

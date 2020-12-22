@@ -46,6 +46,10 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.2.1'
 
+    implementation "io.reactivex.rxjava3:rxjava:3.0.8"
+
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.4.Final'
+
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
