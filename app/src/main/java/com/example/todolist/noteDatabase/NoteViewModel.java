@@ -2,15 +2,10 @@ package com.example.todolist.noteDatabase;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.todolist.AddNoteActivity;
-
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Single;
 
 public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;

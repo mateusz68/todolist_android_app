@@ -16,6 +16,17 @@
         <item android:id="@+id/nav_note_list"
             android:icon="@drawable/ic_baseline_note_24"
             android:title="Notes"/>
+        <item android:id="@+id/nav_calendar"
+            android:title="Calendar"
+            android:icon="@drawable/ic_baseline_assignment_24"/>
     </group>
+    <item android:title="Account">
+        <menu>
+            <item android:id="@+id/nav_account_manage"
+                android:title="Google Account"
+                android:icon="@drawable/ic_baseline_account_circle_24"/>
+        </menu>
+    </item>
+
 
 </menu>

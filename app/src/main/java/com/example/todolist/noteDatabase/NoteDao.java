@@ -30,7 +30,4 @@ public interface NoteDao {
 
     @Query("SELECT * FROM note_table WHERE id = :noteId")
     Note getNoteById(int noteId);
-
-    @Query("SELECT * FROM note_table WHERE id = :noteId")
-    Note getNoteBy(int noteId);
 }

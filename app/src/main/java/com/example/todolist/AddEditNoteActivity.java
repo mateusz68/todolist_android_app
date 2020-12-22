@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
     public static final int CAMERA_PERM_CODE = 101;
     public static final int CAMERA_REQUEST_CODE = 102;
     public static final int GALLERY_REQUEST_CODE = 105;
@@ -117,15 +117,9 @@ public class AddNoteActivity extends AppCompatActivity {
 
         Intent data = new Intent();
         if(id != -1 && selectedNote != null){
-//            data.putExtra(EXTRA_ID, id);
             selectedNote.setTitle(editNoteTitle.getText().toString());
             selectedNote.setContent(editNoteContent.getText().toString());
-//            if(selectedNote.getImagePath() != currentPhotoPath){
-//                selectedNote.setImagePath(currentPhotoPath);
-//            }
-            Log.i(TAG, "saved path" + currentPhotoPath);
             selectedNote.setImagePath(currentPhotoPath);
-
             noteViewModel.update(selectedNote);
         }else {
             Date date = new Date();
@@ -342,18 +336,6 @@ public class AddNoteActivity extends AppCompatActivity {
                     askReadStoragePerm();
                     setImage();
                     currentPhotoPath = selectedNote.getImagePath();
-                    Log.i(TAG, "image path " + selectedNote.getImagePath());
-//                    Bitmap bitmap = BitmapFactory.decodeFile(selectedNote.getImagePath());
-//                    currentPhotoPath = selectedNote.getImagePath();
-//                    noteImage.setImageBitmap(bitmap);
-//                    noteImage.setImageURI(Uri.parse(selectedNote.getImagePath()));
-//                    File image = new File(selectedNote.getImagePath());
-//                    if(image.exists())
-//                    {
-//                        noteImage.setImageURI(Uri.fromFile(image));
-//
-//                    }
-//                    noteImage.setVisibility(View.VISIBLE);
                 }
             }
 

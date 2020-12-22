@@ -33,20 +33,12 @@ import static android.app.Activity.RESULT_OK;
  * create an instance of this fragment.
  */
 public class TaskListFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mParam1;
 
     private TaskViewModel taskViewModel;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
-    public Task selectedTask;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -57,15 +49,12 @@ public class TaskListFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment TaskListFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TaskListFragment newInstance(String param1, String param2) {
+    public static TaskListFragment newInstance(int param1) {
         TaskListFragment fragment = new TaskListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +63,7 @@ public class TaskListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
         }
     }
 
@@ -101,17 +89,14 @@ public class TaskListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         LiveData<List<Task>> taskLiveData;
-        if(mParam1 == null){
-            mParam1 = "0";
-        }
         switch (mParam1){
-            case "0":
+            case 0:
                 taskLiveData = taskViewModel.getTodayTasks();
                 break;
-            case "1":
+            case 1:
                 taskLiveData = taskViewModel.getFutureTasks();
                 break;
-            case "2":
+            case 2:
                 taskLiveData = taskViewModel.getArchiveTasks();
                 break;
             default:
@@ -151,10 +136,6 @@ public class TaskListFragment extends Fragment {
             public void onItemClick(Task task) {
                 Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
                 intent.putExtra(AddEditTaskActivity.EXTRA_ID, task.getId());
-                intent.putExtra(AddEditTaskActivity.EXTRA_TITLE, task.getTitle());
-                intent.putExtra(AddEditTaskActivity.EXTRA_DESCRIPTION, task.getDescription());
-                intent.putExtra(AddEditTaskActivity.EXTRA_DATE, HelpMethods.formatDate(task.getDate()));
-                selectedTask = task;
                 startActivityForResult(intent, EDIT_TASK_REQUEST);
             }
         });
@@ -168,39 +149,14 @@ public class TaskListFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK){
-            String title = data.getStringExtra(AddEditTaskActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(AddEditTaskActivity.EXTRA_DESCRIPTION);
-            String taskDate = data.getStringExtra(AddEditTaskActivity.EXTRA_DATE);
-            Date taskD = HelpMethods.parseDate(taskDate);
+            Toast.makeText(getContext(),"Task saved", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == ADD_TASK_REQUEST && resultCode != RESULT_OK){
+            Toast.makeText(getContext(),"Task not saved", Toast.LENGTH_SHORT).show();
 
-            if(taskD == null){
-                taskD = HelpMethods.getCurrentDate();
-            }
-            Task task = new Task(title, description, taskD);
-            taskViewModel.insert(task);
-            Toast.makeText(getContext(),"Note saved", Toast.LENGTH_SHORT).show();
         }else if(requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK){
-            int id = data.getIntExtra(AddEditTaskActivity.EXTRA_ID, -1);
-            if(id == -1){
-                Toast.makeText(getContext(), "Note can't be update", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String title = data.getStringExtra(AddEditTaskActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(AddEditTaskActivity.EXTRA_DESCRIPTION);
-            String taskDate = data.getStringExtra(AddEditTaskActivity.EXTRA_DATE);
-            Date taskD = HelpMethods.parseDate(taskDate);
-            if(taskD == null){
-                taskD = HelpMethods.getCurrentDate();
-            }
-            selectedTask.setTitle(title);
-            selectedTask.setDescription(description);
-            selectedTask.setDate(taskD);
-            taskViewModel.update(selectedTask);
-            selectedTask = null;
-
             Toast.makeText(getContext(),"Task update", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getContext(), "Note not saved", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == EDIT_TASK_REQUEST && resultCode != RESULT_OK) {
+            Toast.makeText(getContext(), "Task not saved", Toast.LENGTH_SHORT).show();
         }
     }
 }

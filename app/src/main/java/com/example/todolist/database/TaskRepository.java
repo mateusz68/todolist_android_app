@@ -50,4 +50,8 @@ public class TaskRepository {
     public LiveData<List<Task>> getTodayTask(Date today){
         return taskDao.getTodayTasks(today);
     }
+
+    public Task getTaskById(int taskId){
+        return taskDao.getTaskById(taskId);
+    }
 }

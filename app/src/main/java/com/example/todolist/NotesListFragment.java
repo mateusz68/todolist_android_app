@@ -3,24 +3,25 @@ package com.example.todolist;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.example.todolist.database.Task;
-import com.example.todolist.database.TaskViewModel;
 import com.example.todolist.noteDatabase.Note;
 import com.example.todolist.noteDatabase.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,8 +39,8 @@ public class NotesListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public static final int ADD_NOTE_REQUEST = 1;
-    public static final int EDIT_NOTE_REQUEST = 2;
+    public static final int ADD_NOTE_REQUEST = 3;
+    public static final int EDIT_NOTE_REQUEST = 4;
     private NoteViewModel noteViewModel;
 
     public NotesListFragment() {
@@ -83,7 +84,7 @@ public class NotesListFragment extends Fragment {
         buttonAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddNoteActivity.class);
+                Intent intent = new Intent(getContext(), AddEditNoteActivity.class);
                 startActivityForResult(intent, ADD_NOTE_REQUEST);
             }
         });
@@ -104,14 +105,26 @@ public class NotesListFragment extends Fragment {
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Note note) {
-                Intent intent = new Intent(getActivity(), AddNoteActivity.class);
-                intent.putExtra(AddNoteActivity.EXTRA_ID, note.getId());
-//                selectedTask = task;
-//                startActivityForResult(intent, EDIT_NOTE_REQUEST);
-                startActivity(intent);
+                Intent intent = new Intent(getActivity(), AddEditNoteActivity.class);
+                intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.getId());
+                startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
-
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
+            Toast.makeText(getContext(), "Note save", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == ADD_NOTE_REQUEST && resultCode != RESULT_OK){
+            Toast.makeText(getContext(), "Note not save", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK){
+            Toast.makeText(getContext(), "Note updated", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == EDIT_NOTE_REQUEST && resultCode != RESULT_OK){
+            Toast.makeText(getContext(), "Note not updated", Toast.LENGTH_SHORT).show();
+        }
     }
 }

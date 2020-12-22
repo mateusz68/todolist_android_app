@@ -36,4 +36,7 @@ public interface TaskDao {
 
     @Query("Select * From task_table Where done=0 AND date <= :today Order By date DESC")
     LiveData<List<Task>> getTodayTasks(Date today);
+
+    @Query("SELECT * FROM task_table WHERE id = :taskId")
+    Task getTaskById(int taskId);
 }

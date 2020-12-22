@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             TaskListFragment taskListFragment = new TaskListFragment();
             Bundle bundle = new Bundle();
-            bundle.putString(TaskListFragment.ARG_PARAM1, "0");
+            bundle.putInt(TaskListFragment.ARG_PARAM1, 0);
             taskListFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                     taskListFragment).commit();
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_today_task:
                 taskListFragment = new TaskListFragment();
                 bundle = new Bundle();
-                bundle.putString(TaskListFragment.ARG_PARAM1, "0");
+                bundle.putInt(TaskListFragment.ARG_PARAM1, 0);
                 taskListFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         taskListFragment).commit();
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_future_task:
                 taskListFragment = new TaskListFragment();
                 bundle = new Bundle();
-                bundle.putString(TaskListFragment.ARG_PARAM1, "1");
+                bundle.putInt(TaskListFragment.ARG_PARAM1, 1);
                 taskListFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         taskListFragment).commit();
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_archive_task:
                 taskListFragment = new TaskListFragment();
                 bundle = new Bundle();
-                bundle.putString(TaskListFragment.ARG_PARAM1, "2");
+                bundle.putInt(TaskListFragment.ARG_PARAM1, 2);
                 taskListFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         taskListFragment).commit();
@@ -77,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NotesListFragment notesListFragment = new NotesListFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         notesListFragment).commit();
+            case R.id.nav_account_manage:
+                Intent intent = new Intent(this, GoogleSignInAccountActivity.class);
+                startActivity(intent);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -47,4 +47,8 @@ public class TaskViewModel extends AndroidViewModel {
     public LiveData<List<Task>> getFutureTasks(){
         return repository.getFutureTask(HelpMethods.getCurrentDate());
     }
+
+    public Task getTaskById(int taskId){
+        return repository.getTaskById(taskId);
+    }
 }

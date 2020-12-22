@@ -2,9 +2,11 @@ package com.example.todolist;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +16,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.todolist.database.Task;
+import com.example.todolist.database.TaskViewModel;
+import com.example.todolist.noteDatabase.NoteViewModel;
+
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddEditTaskActivity extends AppCompatActivity {
     public static final String EXTRA_ID = "com.example.todolist.EXTRA_ID";
@@ -25,6 +32,9 @@ public class AddEditTaskActivity extends AppCompatActivity {
     private EditText editTextDescription;
     private EditText editTextDate;
     DatePickerDialog.OnDateSetListener setListener;
+    private Task selectedTask = null;
+    private TaskViewModel taskViewModel;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +67,16 @@ public class AddEditTaskActivity extends AppCompatActivity {
 
             }
         });
-
+        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
         Intent intent = getIntent();
 
         if(intent.hasExtra(EXTRA_ID)){
             setTitle("Edit Task");
-            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
-            editTextDate.setText(intent.getStringExtra(EXTRA_DATE));
+            id = intent.getIntExtra(EXTRA_ID,-1);
+            if(id != -1){
+                new getTask().execute();
+            }
         }else{
             setTitle("Add Task");
         }
@@ -76,6 +87,10 @@ public class AddEditTaskActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
         String taskDate = editTextDate.getText().toString();
+        Date taskD = HelpMethods.parseDate(taskDate);
+        if(taskD == null){
+            taskD = HelpMethods.getCurrentDate();
+        }
 
         // Sprawdzam czy pola nie są puste
         if(title.trim().isEmpty() || description.trim().isEmpty()){
@@ -83,17 +98,17 @@ public class AddEditTaskActivity extends AppCompatActivity {
             return;
         }
 
-        Intent data = new Intent();
-        data.putExtra(EXTRA_TITLE, title);
-        data.putExtra(EXTRA_DESCRIPTION, description);
-        data.putExtra(EXTRA_DATE, taskDate);
-
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if(id != -1){
-            data.putExtra(EXTRA_ID, id);
+        if(id != -1 && selectedTask != null){
+            selectedTask.setTitle(title);
+            selectedTask.setDescription(description);
+            selectedTask.setDate(taskD);
+            taskViewModel.update(selectedTask);
+        }else {
+            Task task = new Task(title, description,taskD);
+            taskViewModel.insert(task);
         }
 
-        setResult(RESULT_OK, data);
+        setResult(RESULT_OK, new Intent());
         finish();
     }
 
@@ -112,6 +127,26 @@ public class AddEditTaskActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private class getTask extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids){
+            selectedTask = taskViewModel.getTaskById(id);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(selectedTask != null){
+                editTextTitle.setText(selectedTask.getTitle());
+                editTextDescription.setText(selectedTask.getDescription());
+                editTextDate.setText(HelpMethods.formatDate(selectedTask.getDate()));
+            }
+
         }
     }
 }
