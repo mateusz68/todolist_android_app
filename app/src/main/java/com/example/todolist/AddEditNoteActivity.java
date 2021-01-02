@@ -30,8 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.todolist.noteDatabase.Note;
-import com.example.todolist.noteDatabase.NoteViewModel;
+import com.example.todolist.database.Note;
+import com.example.todolist.database.ToDoViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
     private static String TAG = "AddNoteActivity";
 
 
-    private NoteViewModel noteViewModel;
+    private ToDoViewModel toDoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
                 startActivityForResult(gallery, GALLERY_REQUEST_CODE);
             }
         });
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
         Intent intent = getIntent();
 
@@ -123,14 +123,14 @@ public class AddEditNoteActivity extends AppCompatActivity {
             selectedNote.setTitle(editNoteTitle.getText().toString());
             selectedNote.setContent(editNoteContent.getText().toString());
             selectedNote.setImagePath(currentPhotoPath);
-            noteViewModel.update(selectedNote);
+            toDoViewModel.updateNote(selectedNote);
         }else {
             Date date = new Date();
             Note note = new Note(title,content,date);
             if(currentPhotoPath != null){
                 note.setImagePath(currentPhotoPath);
             }
-            noteViewModel.insert(note);
+            toDoViewModel.insertNote(note);
         }
 
         setResult(RESULT_OK, data);
@@ -325,7 +325,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids){
-            selectedNote = noteViewModel.getNoteById(id);
+            selectedNote = toDoViewModel.getNoteById(id);
             return null;
         }
 

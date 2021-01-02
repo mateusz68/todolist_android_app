@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.todolist.database.Task;
-import com.example.todolist.database.TaskViewModel;
+import com.example.todolist.database.ToDoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class TaskListFragment extends Fragment {
     public static final String ARG_PARAM1 = "param1";
     private int mParam1;
 
-    private TaskViewModel taskViewModel;
+    private ToDoViewModel toDoViewModel;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
 
@@ -88,20 +88,20 @@ public class TaskListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         final TaskAdapter adapter = new TaskAdapter();
         recyclerView.setAdapter(adapter);
-        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
         LiveData<List<Task>> taskLiveData;
         switch (mParam1){
             case 0:
-                taskLiveData = taskViewModel.getTodayTasks();
+                taskLiveData = toDoViewModel.getTodayTasks();
                 break;
             case 1:
-                taskLiveData = taskViewModel.getFutureTasks();
+                taskLiveData = toDoViewModel.getFutureTasks();
                 break;
             case 2:
-                taskLiveData = taskViewModel.getArchiveTasks();
+                taskLiveData = toDoViewModel.getArchiveTasks();
                 break;
             default:
-                taskLiveData = taskViewModel.getTodayTasks();
+                taskLiveData = toDoViewModel.getTodayTasks();
         }
         taskLiveData.observe(getViewLifecycleOwner(), new Observer<List<Task>>() {
             @Override
@@ -125,7 +125,7 @@ public class TaskListFragment extends Fragment {
                     alert.setMessage(getString(R.string.delete_task_message));
                     alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                            toDoViewModel.deleteTask(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                             Toast.makeText(getContext(), getString(R.string.task_delete_info), Toast.LENGTH_SHORT).show();
                             adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                         }
@@ -141,7 +141,7 @@ public class TaskListFragment extends Fragment {
                 }else if(direction == ItemTouchHelper.RIGHT){
                     Task tempTask = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     tempTask.setDone(!tempTask.getDone());
-                    taskViewModel.update(tempTask);
+                    toDoViewModel.updateTask(tempTask);
                     Toast.makeText(getContext(), getString(R.string.task_done_info), Toast.LENGTH_SHORT).show();
                 }
             }

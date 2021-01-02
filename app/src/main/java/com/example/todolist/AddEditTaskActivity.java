@@ -17,8 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.todolist.database.Task;
-import com.example.todolist.database.TaskViewModel;
-import com.example.todolist.noteDatabase.NoteViewModel;
+import com.example.todolist.database.ToDoViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +32,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
     private EditText editTextDate;
     DatePickerDialog.OnDateSetListener setListener;
     private Task selectedTask = null;
-    private TaskViewModel taskViewModel;
+    private ToDoViewModel toDoViewModel;
     private int id;
 
     @Override
@@ -67,7 +66,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
 
             }
         });
-        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
         Intent intent = getIntent();
 
@@ -106,10 +105,10 @@ public class AddEditTaskActivity extends AppCompatActivity {
             selectedTask.setTitle(title);
             selectedTask.setDescription(description);
             selectedTask.setDate(taskD);
-            taskViewModel.update(selectedTask);
+            toDoViewModel.updateTask(selectedTask);
         }else {
             Task task = new Task(title, description,taskD);
-            taskViewModel.insert(task);
+            toDoViewModel.insertTask(task);
         }
 
         setResult(RESULT_OK, new Intent());
@@ -138,7 +137,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids){
-            selectedTask = taskViewModel.getTaskById(id);
+            selectedTask = toDoViewModel.getTaskById(id);
             return null;
         }
 

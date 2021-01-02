@@ -19,9 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.todolist.database.Task;
-import com.example.todolist.noteDatabase.Note;
-import com.example.todolist.noteDatabase.NoteViewModel;
+import com.example.todolist.database.Note;
+import com.example.todolist.database.ToDoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -46,7 +45,7 @@ public class NotesListFragment extends Fragment {
 
     public static final int ADD_NOTE_REQUEST = 3;
     public static final int EDIT_NOTE_REQUEST = 4;
-    private NoteViewModel noteViewModel;
+    private ToDoViewModel toDoViewModel;
 
     public NotesListFragment() {
         // Required empty public constructor
@@ -99,8 +98,8 @@ public class NotesListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         final NoteAdapter adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
+        toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
+        toDoViewModel.getAllNotes().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 adapter.setNotes(notes);
@@ -130,7 +129,7 @@ public class NotesListFragment extends Fragment {
                 alert.setMessage(getString(R.string.delete_note_message));
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                        toDoViewModel.deleteNote(adapter.getNoteAt(viewHolder.getAdapterPosition()));
                         Toast.makeText(getContext(), getString(R.string.note_delete_info), Toast.LENGTH_SHORT).show();
                         adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                     }
