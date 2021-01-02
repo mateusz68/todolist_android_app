@@ -1,12 +1,16 @@
 package com.example.todolist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -15,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.todolist.database.Task;
 import com.example.todolist.noteDatabase.Note;
 import com.example.todolist.noteDatabase.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -110,6 +115,37 @@ public class NotesListFragment extends Fragment {
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setTitle(getString(R.string.delete_note_title));
+                alert.setMessage(getString(R.string.delete_note_message));
+                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                        Toast.makeText(getContext(), getString(R.string.note_delete_info), Toast.LENGTH_SHORT).show();
+                        adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                    }
+                });
+                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close dialog
+                        adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
         return view;
     }
 
@@ -118,13 +154,13 @@ public class NotesListFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
-            Toast.makeText(getContext(), "Note save", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.note_save_info), Toast.LENGTH_SHORT).show();
         }else if(requestCode == ADD_NOTE_REQUEST && resultCode != RESULT_OK){
-            Toast.makeText(getContext(), "Note not save", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.note_save_error), Toast.LENGTH_SHORT).show();
         }else if(requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK){
-            Toast.makeText(getContext(), "Note updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.note_update_info), Toast.LENGTH_SHORT).show();
         }else if(requestCode == EDIT_NOTE_REQUEST && resultCode != RESULT_OK){
-            Toast.makeText(getContext(), "Note not updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.note_update_error_info), Toast.LENGTH_SHORT).show();
         }
     }
 }

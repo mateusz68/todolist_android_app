@@ -1,4 +1,5 @@
 package com.example.todolist;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.example.todolist.noteDatabase.Note;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
@@ -38,9 +40,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
             holder.textViewSubtitle.setText(currentNote.getContent());
         }
 
-//        holder.textViewDate.setText(currentNote.getCreateDate().toString());
         PrettyTime prettyTime = new PrettyTime();
         holder.textViewDate.setText(prettyTime.format(currentNote.getCreateDate()));
+
         if(currentNote.getImagePath() != null){
             holder.imageViewNoteType.setImageResource(R.drawable.ic_baseline_image_24);
         }else {

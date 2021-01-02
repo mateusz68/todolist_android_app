@@ -3,28 +3,25 @@ package com.example.todolist;
 import android.content.Context;
 import android.graphics.Paint;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todolist.database.Task;
+import com.google.api.services.tasks.model.Task;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
+public class GoogleTaskAdapter extends RecyclerView.Adapter<GoogleTaskAdapter.TaskHolder> {
     private List<Task> tasks = new ArrayList<>();
     private  OnItemClickListener listener;
     Context myContext;
@@ -45,30 +42,44 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
-        Task currentTask = tasks.get(position);
-        holder.textViewTitle.setText(currentTask.getTitle());
-        if(currentTask.getDone())
-            holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        else
-            holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-//        holder.textViewDate.setText(currentTask.getDate().toString());
-//        holder.textViewDate.setText(formatTaskDate(currentTask));
-//        PrettyTime prettyTime = new PrettyTime();
-//        holder.textViewDate.setText(prettyTime.format(currentTask.getDate()));
-//        Long time = currentTask.getDate().getTime();
-//        Date date1 = new Date();
-        CharSequence timeStr = DateUtils.getRelativeTimeSpanString(currentTask.getDate().getTime(),new Date().getTime(),DateUtils.DAY_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
-        holder.textViewDate.setText(timeStr);
+        if(tasks != null){
+            Task currentTask = tasks.get(position);
+            holder.textViewTitle.setText(currentTask.getTitle());
+            if(currentTask.getDue()!=null){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                Date taskDate = null;
+                try {
+                    taskDate = sdf.parse(currentTask.getDue().toStringRfc3339());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                PrettyTime prettyTime = new PrettyTime();
+                holder.textViewDate.setText(prettyTime.format(taskDate));
+            }else{
+                holder.textViewDate.setText("");
+            }
+        }
+
+
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        if(tasks == null){
+            return 0;
+        }else {
+            return tasks.size();
+        }
     }
 
     public void setTasks(List<Task> tasks){
         this.tasks = tasks;
         notifyDataSetChanged();
+    }
+
+    public void removeAt(int position){
+        tasks.remove(position);
+        notifyItemRemoved(position);
     }
 
     public Task getTaskAt(int position){
@@ -96,28 +107,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         }
     }
 
-    public String formatTaskDate(Task task){
-        Date taskDate = task.getDate();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        if(taskDate.compareTo(calendar.getTime()) == 0)
-            return "Today";
-        calendar.add(Calendar.DATE,-1);
-        if(taskDate.compareTo(calendar.getTime()) == 0)
-            return "Yesterday";
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        return dateFormat.format(taskDate);
-    }
-
     public interface  OnItemClickListener{
         void onItemClick(Task task);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
-
     }
 }

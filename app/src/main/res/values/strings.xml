@@ -14,4 +14,27 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_task_title">Edit Task</string>
+    <string name="add_task_title">Add Task</string>
+    <string name="error_empty_title">Please insert a title.</string>
+    <string name="error_empty_description_task">Please insert a description.</string>
+    <string name="camera_permission_requried_error">Camera Permission is Requried to use Camera</string>
+    <string name="storage_permission_requried_error">Storage Permission is Requried to add photos</string>
+    <string name="edit_note_titile">Edit Note</string>
+    <string name="add_note_title">Add note</string>
+    <string name="note_save_info">Note save</string>
+    <string name="note_save_error">Note not save</string>
+    <string name="note_update_info">Note updated</string>
+    <string name="note_update_error_info">Note not updated</string>
+    <string name="task_delete_info">Task delete</string>
+    <string name="task_done_info">Task Done</string>
+    <string name="task_save_info">Task saved</string>
+    <string name="task_save_error_info">Task not saved</string>
+    <string name="task_update_info">Task update</string>
+    <string name="task_update_error_info">Task not saved</string>
+    <string name="delete_task_title">Delete task</string>
+    <string name="delete_task_message">Are you sure you want to delete the selected task?</string>
+    <string name="delete_note_title">Delete note</string>
+    <string name="delete_note_message">Are you sure you want to delete the selected note?</string>
+    <string name="note_delete_info">Note delete</string>
 </resources>

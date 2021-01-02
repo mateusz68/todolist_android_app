@@ -75,7 +75,6 @@ public class AddEditNoteActivity extends AppCompatActivity {
             public void onClick(View v) {
                 askCameraPermissions();
                 askReadStoragePerm();
-                Log.i(TAG, "Take picture btn clicked");
             }
         });
 
@@ -92,14 +91,14 @@ public class AddEditNoteActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if(intent.hasExtra(EXTRA_ID)){
-            setTitle("Edit Task");
+            setTitle(getString(R.string.edit_note_titile));
             int noteId = intent.getIntExtra(EXTRA_ID,-1);
             if(noteId != -1){
                 id = noteId;
                 new getNote().execute();
             }
         }else{
-            setTitle("Add Task");
+            setTitle(getString(R.string.add_note_title));
         }
 
     }
@@ -110,8 +109,12 @@ public class AddEditNoteActivity extends AppCompatActivity {
         String content = editNoteContent.getText().toString();
 
         // Sprawdzam czy pola nie są puste
-        if(title.trim().isEmpty() || content.trim().isEmpty()){
-            Toast.makeText(this,"Please insert a title and description",Toast.LENGTH_SHORT).show();
+        if(title.trim().isEmpty()){
+            Toast.makeText(this, getString(R.string.error_empty_title),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(content.trim().isEmpty()){
+            Toast.makeText(this, getString(R.string.error_empty_description_task),Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -169,14 +172,14 @@ public class AddEditNoteActivity extends AppCompatActivity {
 //                dispatchTakePictureIntent();
                 askWriteStoragePerm();
             }else{
-                Toast.makeText(this,"Camera Permission is Requried to use Camera",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.camera_permission_requried_error),Toast.LENGTH_SHORT).show();
             }
         }
         if(requestCode == STORAGE_REQUEST_CODE){
             if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 //                setImage();
             }else{
-                Toast.makeText(this,"Storage Permission is Requried to add photos",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.storage_permission_requried_error),Toast.LENGTH_SHORT).show();
             }
         }
         if(requestCode == WRITE_STORAGE_REQUEST_CODE){
@@ -184,7 +187,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
 //                setImage();
                 dispatchTakePictureIntent();
             }else{
-                Toast.makeText(this,"Storage Write Permission is Requried to take photos",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,getString(R.string.storage_permission_requried_error),Toast.LENGTH_SHORT).show();
             }
         }
     }

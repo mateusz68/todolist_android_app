@@ -78,9 +78,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NotesListFragment notesListFragment = new NotesListFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         notesListFragment).commit();
+                break;
+            case R.id.nav_calendar:
+                Intent calendarIntent = new Intent(this, GoogleTasks.class);
+                startActivity(calendarIntent);
+                break;
             case R.id.nav_account_manage:
                 Intent intent = new Intent(this, GoogleSignInAccountActivity.class);
                 startActivity(intent);
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

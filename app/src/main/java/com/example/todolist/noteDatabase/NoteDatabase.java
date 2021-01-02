@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.todolist.database.Converters;
+import com.example.todolist.database.TaskDatabase;
 
 import java.sql.Date;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +28,7 @@ public abstract class NoteDatabase extends RoomDatabase {
 
     static NoteDatabase getDatabase(final Context context){
         if (INSTANCE == null){
-            synchronized (com.example.todolist.database.TaskDatabase.class){
+            synchronized (NoteDatabase.class){
                 if(INSTANCE == null){
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             NoteDatabase.class, "note_db")

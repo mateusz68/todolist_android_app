@@ -72,13 +72,13 @@ public class AddEditTaskActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if(intent.hasExtra(EXTRA_ID)){
-            setTitle("Edit Task");
+            setTitle(getString(R.string.edit_task_title));
             id = intent.getIntExtra(EXTRA_ID,-1);
             if(id != -1){
                 new getTask().execute();
             }
         }else{
-            setTitle("Add Task");
+            setTitle(getString(R.string.add_task_title));
         }
 
     }
@@ -93,8 +93,12 @@ public class AddEditTaskActivity extends AppCompatActivity {
         }
 
         // Sprawdzam czy pola nie są puste
-        if(title.trim().isEmpty() || description.trim().isEmpty()){
-            Toast.makeText(this,"Please insert a title and description",Toast.LENGTH_SHORT).show();
+        if(title.trim().isEmpty()){
+            Toast.makeText(this,getString(R.string.error_empty_title),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(description.trim().isEmpty()){
+            Toast.makeText(this,getString(R.string.error_empty_description_task),Toast.LENGTH_SHORT).show();
             return;
         }
 

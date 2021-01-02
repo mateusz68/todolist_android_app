@@ -1,5 +1,7 @@
 package com.example.todolist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,7 +24,6 @@ import com.example.todolist.database.Task;
 import com.example.todolist.database.TaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -119,14 +120,29 @@ public class TaskListFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if(direction == ItemTouchHelper.LEFT) {
-                    taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                    Toast.makeText(getContext(), "Note delet", Toast.LENGTH_SHORT).show();
-                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                    alert.setTitle(getString(R.string.delete_task_title));
+                    alert.setMessage(getString(R.string.delete_task_message));
+                    alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                            Toast.makeText(getContext(), getString(R.string.task_delete_info), Toast.LENGTH_SHORT).show();
+                            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                        }
+                    });
+                    alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // close dialog
+                            adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                            dialog.cancel();
+                        }
+                    });
+                    alert.show();
                 }else if(direction == ItemTouchHelper.RIGHT){
                     Task tempTask = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     tempTask.setDone(!tempTask.getDone());
                     taskViewModel.update(tempTask);
-                    Toast.makeText(getContext(), "Task Done", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.task_done_info), Toast.LENGTH_SHORT).show();
                 }
             }
         }).attachToRecyclerView(recyclerView);
@@ -149,14 +165,14 @@ public class TaskListFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK){
-            Toast.makeText(getContext(),"Task saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.task_save_info), Toast.LENGTH_SHORT).show();
         }else if(requestCode == ADD_TASK_REQUEST && resultCode != RESULT_OK){
-            Toast.makeText(getContext(),"Task not saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.task_save_error_info), Toast.LENGTH_SHORT).show();
 
         }else if(requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK){
-            Toast.makeText(getContext(),"Task update", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.task_update_info), Toast.LENGTH_SHORT).show();
         }else if(requestCode == EDIT_TASK_REQUEST && resultCode != RESULT_OK) {
-            Toast.makeText(getContext(), "Task not saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.task_update_error_info), Toast.LENGTH_SHORT).show();
         }
     }
 }
