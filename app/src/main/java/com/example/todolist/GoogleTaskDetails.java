@@ -71,20 +71,14 @@ public class GoogleTaskDetails extends AppCompatActivity {
             Intent intent = new Intent(this, GoogleSignInAccountActivity.class);
             startActivity(intent);
         }
-        Log.d(TAG, "acct " + acct);
 
         credential =
                 GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
-//        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-//        credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
         credential.setSelectedAccountName(acct.getAccount().name);
-        Log.d(TAG, "credentical " + credential);
-//        Log.d(TAG, "user " + settings.getString(PREF_ACCOUNT_NAME,null));
-        // Tasks client
+
         service =
                 new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential)
                         .setApplicationName("Google-TasksAndroidSample/1.0").build();
-        Log.d(TAG, "service " + service);
 
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
@@ -108,7 +102,6 @@ public class GoogleTaskDetails extends AppCompatActivity {
             }
         }else{
             setTitle(getString(R.string.add_task_title));
-            googleTaskDateButton.setText("Select Date");
         }
 
         googleTaskDateButton.setOnClickListener(new View.OnClickListener() {
@@ -266,8 +259,6 @@ public class GoogleTaskDetails extends AppCompatActivity {
                 taskDate = HelpMethods.formatRFCDate(selectedTask.getDue().toStringRfc3339());
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyy-MM-dd");
                 googleTaskDateButton.setText(simpleDateFormat.format(taskDate.getTime()));
-            }else{
-                googleTaskDateButton.setText("Select Date");
             }
 
         }

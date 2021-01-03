@@ -141,8 +141,13 @@ public class TaskListFragment extends Fragment {
                 }else if(direction == ItemTouchHelper.RIGHT){
                     Task tempTask = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     tempTask.setDone(!tempTask.getDone());
+                    if(tempTask.getDone()){
+                        Toast.makeText(getContext(), getString(R.string.task_done_info), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getContext(), getString(R.string.task_undone_info), Toast.LENGTH_SHORT).show();
+                    }
                     toDoViewModel.updateTask(tempTask);
-                    Toast.makeText(getContext(), getString(R.string.task_done_info), Toast.LENGTH_SHORT).show();
+
                 }
             }
         }).attachToRecyclerView(recyclerView);

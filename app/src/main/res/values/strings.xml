@@ -1,18 +1,10 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="edit_task_title">Edit Task</string>
     <string name="add_task_title">Add Task</string>
@@ -28,6 +20,7 @@
     <string name="note_update_error_info">Note not updated</string>
     <string name="task_delete_info">Task delete</string>
     <string name="task_done_info">Task Done</string>
+    <string name="task_undone_info">Task Undone</string>
     <string name="task_save_info">Task saved</string>
     <string name="task_save_error_info">Task not saved</string>
     <string name="task_update_info">Task update</string>
@@ -37,4 +30,20 @@
     <string name="delete_note_title">Delete note</string>
     <string name="delete_note_message">Are you sure you want to delete the selected note?</string>
     <string name="note_delete_info">Note delete</string>
+    <string name="select_date_button">Select Date</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="take_photo">Take photo</string>
+    <string name="add_photo_from_gallery">Add photo from gallery</string>
+    <string name="log_in_to_your_google_account">Log in to your google account</string>
+    <string name="sign_out">SIGN OUT</string>
+    <string name="save">Save</string>
+    <string name="refresh">Refresh</string>
+    <string name="today_task">Today Task</string>
+    <string name="future_task">Future Task</string>
+    <string name="archive_task">Archive Task</string>
+    <string name="notes">Notes</string>
+    <string name="account">Account</string>
+    <string name="google_account">Google Account</string>
+    <string name="google_task">Google Task</string>
 </resources>

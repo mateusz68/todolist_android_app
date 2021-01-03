@@ -45,6 +45,10 @@ public class GoogleTaskAdapter extends RecyclerView.Adapter<GoogleTaskAdapter.Ta
         if(tasks != null){
             Task currentTask = tasks.get(position);
             holder.textViewTitle.setText(currentTask.getTitle());
+            if(currentTask.getStatus().equals("completed"))
+                holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            else
+                holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             if(currentTask.getDue()!=null){
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                 Date taskDate = null;
@@ -55,12 +59,18 @@ public class GoogleTaskAdapter extends RecyclerView.Adapter<GoogleTaskAdapter.Ta
                 }
                 PrettyTime prettyTime = new PrettyTime();
                 holder.textViewDate.setText(prettyTime.format(taskDate));
+            }else if(currentTask.getNotes()!=null){
+                String descriptionShort = "";
+                if(currentTask.getNotes().length() > 15){
+                    descriptionShort = currentTask.getNotes().substring(0,14);
+                }else {
+                    descriptionShort = currentTask.getNotes();
+                }
+                holder.textViewDate.setText(descriptionShort);
             }else{
                 holder.textViewDate.setText("");
             }
         }
-
-
     }
 
     @Override
@@ -78,8 +88,10 @@ public class GoogleTaskAdapter extends RecyclerView.Adapter<GoogleTaskAdapter.Ta
     }
 
     public void removeAt(int position){
-        tasks.remove(position);
-        notifyItemRemoved(position);
+        if(position<tasks.size() && position >= 0){
+            tasks.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public Task getTaskAt(int position){

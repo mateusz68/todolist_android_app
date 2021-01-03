@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_cointainer,
                         notesListFragment).commit();
                 break;
-            case R.id.nav_calendar:
+            case R.id.nav_google_task:
                 Intent calendarIntent = new Intent(this, GoogleTasks.class);
                 startActivity(calendarIntent);
                 break;

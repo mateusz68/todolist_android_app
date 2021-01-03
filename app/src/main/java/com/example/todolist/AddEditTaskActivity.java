@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
     public static final String EXTRA_DATE = "com.example.todolist.EXTRA_DATE";
     private EditText editTextTitle;
     private EditText editTextDescription;
-    private EditText editTextDate;
+    private Button editTextDate;
     DatePickerDialog.OnDateSetListener setListener;
     private Task selectedTask = null;
     private ToDoViewModel toDoViewModel;

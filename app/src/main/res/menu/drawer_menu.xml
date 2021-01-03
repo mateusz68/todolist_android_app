@@ -6,25 +6,25 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_today_task"
             android:icon="@drawable/ic_baseline_calendar_today_24"
-            android:title="Today Task"/>
+            android:title="@string/today_task"/>
         <item android:id="@+id/nav_future_task"
             android:icon="@drawable/ic_baseline_task_alt_24"
-            android:title="Future Task"/>
+            android:title="@string/future_task"/>
         <item android:id="@+id/nav_archive_task"
             android:icon="@drawable/ic_baseline_archive_24"
-            android:title="Archive Task"/>
+            android:title="@string/archive_task"/>
         <item android:id="@+id/nav_note_list"
             android:icon="@drawable/ic_baseline_note_24"
-            android:title="Notes"/>
-        <item android:id="@+id/nav_calendar"
-            android:title="Calendar"
-            android:icon="@drawable/ic_baseline_assignment_24"/>
+            android:title="@string/notes"/>
     </group>
-    <item android:title="Account">
+    <item android:title="@string/account">
         <menu>
             <item android:id="@+id/nav_account_manage"
-                android:title="Google Account"
+                android:title="@string/google_account"
                 android:icon="@drawable/ic_baseline_account_circle_24"/>
+            <item android:id="@+id/nav_google_task"
+                android:title="@string/google_task"
+                android:icon="@drawable/ic_baseline_cloud_done_24"/>
         </menu>
     </item>
 

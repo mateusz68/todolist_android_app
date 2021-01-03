@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,30 +19,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,10 +57,10 @@ public class GoogleTasks extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        haveGooglePlayServices();
+        checkGoogleAccount();
     }
 
-    private void haveGooglePlayServices() {
+    private void checkGoogleAccount() {
         // check if there is already an account selected
         if (credential.getSelectedAccountName() == null) {
             // ask user to choose account
@@ -120,15 +112,33 @@ public class GoogleTasks extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if(direction == ItemTouchHelper.LEFT) {
-                    Task task = adapter.getTaskAt(viewHolder.getAdapterPosition());
-                    new deleteTask().execute(task.getId(),currentTaskList.getId());
-                    adapter.removeAt(viewHolder.getAdapterPosition());
-                    Toast.makeText(GoogleTasks.this, "Note delete", Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(GoogleTasks.this);
+                    alert.setTitle(getString(R.string.delete_task_title));
+                    alert.setMessage(getString(R.string.delete_task_message));
+                    alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Task task = adapter.getTaskAt(viewHolder.getAdapterPosition());
+//                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                            adapter.removeAt(viewHolder.getAdapterPosition());
+                            new DeleteTaskAsync().execute(task.getId(),currentTaskList.getId());
+                        }
+                    });
+                    alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // close dialog
+                            adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                            dialog.cancel();
+                        }
+                    });
+                    alert.show();
+
                 }else if(direction == ItemTouchHelper.RIGHT){
                     selectedTask = adapter.getTaskAt(viewHolder.getAdapterPosition());
-                    new markTaskAsDone().execute();
-                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                    adapter.removeAt(viewHolder.getAdapterPosition());
+//                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+//                    adapter.removeAt(viewHolder.getAdapterPosition());
+                    new MarkTaskAsDoneAsync().execute();
+                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                 }
             }
         }).attachToRecyclerView(recyclerView);
@@ -136,7 +146,6 @@ public class GoogleTasks extends AppCompatActivity {
         adapter.setOnItemClickListener(new GoogleTaskAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Task task) {
-                Log.d(TAG, "selected task" + task);
                 Intent intent = new Intent(GoogleTasks.this, GoogleTaskDetails.class);
                 intent.putExtra(GoogleTaskDetails.EXTRA_TASK_ID, task.getId());
                 startActivityForResult(intent,GOOGLE_EDIT_TASK_REQUEST);
@@ -173,33 +182,75 @@ public class GoogleTasks extends AppCompatActivity {
         }
     }
 
-    private void loadTasks() {
-        new getTasks().execute();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == GOOGLE_ADD_TASK_REQUEST && resultCode == RESULT_OK){
+            Toast.makeText(GoogleTasks.this, getString(R.string.task_save_info), Toast.LENGTH_SHORT).show();
+        }else if(requestCode == GOOGLE_ADD_TASK_REQUEST && resultCode != RESULT_OK){
+            Toast.makeText(GoogleTasks.this, getString(R.string.task_save_error_info), Toast.LENGTH_SHORT).show();
+
+        }else if(requestCode == GOOGLE_EDIT_TASK_REQUEST && resultCode == RESULT_OK){
+            Toast.makeText(GoogleTasks.this, getString(R.string.task_update_info), Toast.LENGTH_SHORT).show();
+        }else if(requestCode == GOOGLE_EDIT_TASK_REQUEST && resultCode != RESULT_OK) {
+            Toast.makeText(GoogleTasks.this, getString(R.string.task_update_error_info), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private class markTaskAsDone extends AsyncTask<Void,Void,Void>{
+    private void loadTasks() {
+        new GetTasksAsync().execute();
+    }
+
+    private class MarkTaskAsDoneAsync extends AsyncTask<Void,Void,Void>{
         Task selectedTaskFun;
 
-        markTaskAsDone(){
+        MarkTaskAsDoneAsync(){
             this.selectedTaskFun = selectedTask;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            selectedTaskFun.setStatus("completed");
+            if(selectedTask.getStatus().equals("needsAction")){
+                selectedTaskFun.setStatus("completed");
+            }else if(selectedTask.getStatus().equals("completed")){
+                selectedTaskFun.setStatus("needsAction");
+            }
             try {
-                service.tasks().update(currentTaskList.getId(),selectedTask.getId(),selectedTask).execute();
+                service.tasks().update(currentTaskList.getId(),selectedTaskFun.getId(),selectedTaskFun).execute();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
-    }
 
-    private class deleteTask extends AsyncTask<String, Void, Void>{
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(selectedTask.getStatus().equals("needsAction")){
+                        Toast.makeText(GoogleTasks.this, getString(R.string.task_undone_info), Toast.LENGTH_SHORT).show();
+                    }else if(selectedTask.getStatus().equals("completed")){
+                        Toast.makeText(GoogleTasks.this, getString(R.string.task_done_info), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    private class DeleteTaskAsync extends AsyncTask<String, Void, Void>{
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    loadTasks();
+                    Toast.makeText(GoogleTasks.this, getString(R.string.task_delete_info), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
 
         @Override
@@ -216,7 +267,7 @@ public class GoogleTasks extends AppCompatActivity {
     }
 
 
-    private class getTasks extends AsyncTask<Void,Void,Void>{
+    private class GetTasksAsync extends AsyncTask<Void,Void,Void>{
         List<Task> tasks;
         TaskLists taskLists = new TaskLists();
         @Override
@@ -225,7 +276,7 @@ public class GoogleTasks extends AppCompatActivity {
                 tasks = service.tasks().list(TASK_LIST).execute().getItems();
                 currentTaskList = service.tasklists().get(TASK_LIST).execute();
                 taskLists = service.tasklists().list().execute();
-                Log.d(TAG, "listy" + taskLists);
+                Log.d(TAG, "listy" + tasks);
             } catch (IOException e) {
                 e.printStackTrace();
             }

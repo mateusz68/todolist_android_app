@@ -12,13 +12,13 @@
         android:id="@+id/note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title"
+        android:hint="@string/title"
         android:inputType="text"/>
     <EditText
         android:id="@+id/note_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Text"
+        android:hint="@string/description"
         android:inputType="textMultiLine"
         android:minHeight="100dp"/>
     <ImageView
@@ -34,13 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Take photo"/>
+        android:text="@string/take_photo"/>
     <Button
         android:id="@+id/add_photo_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Add photo from gallery"/>
+        android:text="@string/add_photo_from_gallery"/>
 
 
 
