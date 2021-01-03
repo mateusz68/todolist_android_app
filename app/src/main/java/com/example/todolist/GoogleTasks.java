@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
@@ -40,6 +41,7 @@ import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +58,9 @@ public class GoogleTasks extends AppCompatActivity {
     TaskList currentTaskList;
     private Task selectedTask;
     Menu menuTaskList;
+    public static final int GOOGLE_ADD_TASK_REQUEST = 1;
+    public static final int GOOGLE_EDIT_TASK_REQUEST = 2;
+    private FloatingActionButton addTaskButton;
 
     @Override
     protected void onResume() {
@@ -80,6 +85,8 @@ public class GoogleTasks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_tasks);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
+
+        addTaskButton = findViewById(R.id.add_task_google_button);
 
         RecyclerView recyclerView = findViewById(R.id.google_task_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -125,6 +132,24 @@ public class GoogleTasks extends AppCompatActivity {
                 }
             }
         }).attachToRecyclerView(recyclerView);
+
+        adapter.setOnItemClickListener(new GoogleTaskAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Task task) {
+                Log.d(TAG, "selected task" + task);
+                Intent intent = new Intent(GoogleTasks.this, GoogleTaskDetails.class);
+                intent.putExtra(GoogleTaskDetails.EXTRA_TASK_ID, task.getId());
+                startActivityForResult(intent,GOOGLE_EDIT_TASK_REQUEST);
+            }
+        });
+
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GoogleTasks.this, GoogleTaskDetails.class);
+                startActivityForResult(intent, GOOGLE_ADD_TASK_REQUEST);
+            }
+        });
     }
 
     @Override

@@ -33,10 +33,6 @@
         android:layout_height="wrap_content"
         android:text="Subtasks:"
         android:padding="8dp"/>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/google_subtask_list"/>
 
 
 </LinearLayout>

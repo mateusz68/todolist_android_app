@@ -28,4 +28,15 @@ public class HelpMethods {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         return dateFormat.format(date);
     }
+
+    public static Date formatRFCDate(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date taskDate = null;
+        try {
+            taskDate = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return taskDate;
+    }
 }
